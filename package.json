@@ -1,0 +1,18 @@
+{
+  "name": "watergirl",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "server": "npm -w @watergirl/server run start",
+    "server:dev": "npm -w @watergirl/server run dev",
+    "mobile": "npm -w @watergirl/mobile run start",
+    "test": "npm -w @watergirl/server test",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=22.18"
+  }
+}

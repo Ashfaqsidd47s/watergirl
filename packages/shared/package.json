@@ -1,0 +1,12 @@
+{
+  "name": "@watergirl/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Types shared by the Water Girl server and mobile app (type-only, no runtime code).",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts"
+    }
+  }
+}

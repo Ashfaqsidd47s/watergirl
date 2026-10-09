@@ -1,0 +1,25 @@
+{
+  "name": "@watergirl/server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Water Girl brain + worker: stores projects/tasks and runs coding agents in git worktrees.",
+  "type": "module",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning src/main.ts",
+    "dev": "node --disable-warning=ExperimentalWarning --watch src/main.ts",
+    "test": "node --disable-warning=ExperimentalWarning --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.3.1",
+    "fastify": "^5.12.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@watergirl/shared": "*",
+    "typescript": "~6.0.3"
+  },
+  "engines": {
+    "node": ">=22.18"
+  }
+}
