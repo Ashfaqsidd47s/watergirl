@@ -73,7 +73,15 @@ The easiest and safest option is [Tailscale](https://tailscale.com) on the serve
 phone; then use `http://<machine-name>:8787` in the app. Or put it behind
 HTTPS with a reverse proxy (e.g. Caddy) if you want a public URL.
 
-## 2. Run the phone app
+## 2. Install the phone app
+
+**Android, quickest:** every PR and push to `main` that touches the app builds an
+installable APK on GitHub Actions. Open the **Android APK** run, download
+`watergirl-android-apk` from *Artifacts*, unzip it, copy the `.apk` to your phone and
+open it. You'll need to allow "install unknown apps" for your browser or file manager.
+You can also start a build by hand: *Actions → Android APK → Run workflow*.
+
+**iPhone:** sideloading requires an Apple developer account. Until then, use Expo Go:
 
 ```bash
 npm run mobile        # starts Expo; scan the QR code with the Expo Go app
