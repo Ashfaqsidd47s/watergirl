@@ -75,11 +75,11 @@ HTTPS with a reverse proxy (e.g. Caddy) if you want a public URL.
 
 ## 2. Install the phone app
 
-**Android, quickest:** every PR and push to `main` that touches the app builds an
-installable APK on GitHub Actions. Open the **Android APK** run, download
-`watergirl-android-apk` from *Artifacts*, unzip it, copy the `.apk` to your phone and
-open it. You'll need to allow "install unknown apps" for your browser or file manager.
-You can also start a build by hand: *Actions → Android APK → Run workflow*.
+**Android, quickest:** open the repo's **Releases** page on your phone, download the
+latest `watergirl-*.apk` and open it. Allow "install unknown apps" for your browser
+when asked. Every push to `main` that touches the app publishes a new build, and you can
+start one by hand: *Actions → Android APK → Run workflow*. PR builds attach the APK to the
+run's *Artifacts* instead.
 
 **iPhone:** sideloading requires an Apple developer account. Until then, use Expo Go:
 

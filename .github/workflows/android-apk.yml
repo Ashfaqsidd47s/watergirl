@@ -1,7 +1,8 @@
 name: Android APK
 
 # Builds an installable Water Girl APK (release build, signed with the debug
-# key, so it can be side-loaded). Download it from the run's "Artifacts".
+# key, so it can be side-loaded). Download it from the run's "Artifacts", or —
+# for pushes to main and manual runs — from the repo's Releases page.
 on:
   pull_request:
     paths:
@@ -17,6 +18,9 @@ on:
       - 'package-lock.json'
       - '.github/workflows/android-apk.yml'
   workflow_dispatch:
+
+permissions:
+  contents: write # to publish the APK as a GitHub release
 
 concurrency:
   group: android-apk-${{ github.ref }}
@@ -68,3 +72,14 @@ jobs:
           name: watergirl-android-apk
           path: out/*.apk
           retention-days: 30
+
+      - name: Publish APK as a release
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "apk-${GITHUB_RUN_NUMBER}" out/*.apk \
+            --prerelease \
+            --target "$GITHUB_SHA" \
+            --title "Water Girl for Android (build ${GITHUB_RUN_NUMBER})" \
+            --notes "Side-loadable APK built from ${GITHUB_SHA::7}. Download the .apk on your phone and open it."
