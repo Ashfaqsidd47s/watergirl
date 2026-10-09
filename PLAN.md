@@ -43,7 +43,7 @@ Three pieces:
 
 | Piece | What it does | Lives where |
 |---|---|---|
-| **App** | Chat with Water Girl, see the board, get notifications, tap "merge" | Phone (PWA first), web |
+| **App** | Chat with Water Girl, see the board, get notifications, tap "merge" | Phone app (iOS + Android, Expo) |
 | **Brain** | Stores projects/repos/tasks, talks to you, summarises progress | Small server (VPS) |
 | **Worker** | Actually runs `claude` in a worktree per task, streams progress back | Your home PC *or* a VPS (always on) |
 
@@ -100,9 +100,7 @@ This is the part Claude Code alone doesn't give you. We get it three ways:
 
 ### 3.6 "From anywhere, without my laptop"
 - The worker is **always on** (VPS or home PC), so nothing depends on your laptop.
-- App is a **PWA** (installs on your phone, push notifications).
-- Fastest MVP shortcut: a **Telegram bot** as the first "voice" of Water Girl —
-  chat + voice notes + notifications for free, while the real app is built.
+- App is a **native phone app** (Expo / React Native) with push notifications.
 
 ### 3.7 "Claude now, other agents later"
 - Worker talks to agents through a small **adapter** interface:
@@ -144,22 +142,28 @@ This is the part Claude Code alone doesn't give you. We get it three ways:
 
 ## 5. Build phases
 
-### Phase 0 — Decisions (1–2 days)
-- Worker host: home PC vs. VPS (recommend: small VPS, 4 vCPU / 8 GB).
-- Stack (recommended): **TypeScript** everywhere —
-  Next.js PWA (app) · Node/Fastify (brain) · SQLite → Postgres · Node worker.
-- First front door: Telegram bot or PWA.
+### Phase 0 — Decisions ✅
+- Front door: **native phone app** (Expo / React Native, iOS + Android), not Telegram/PWA.
+- Stack: **TypeScript** everywhere — Expo app · Node/Fastify server (brain + worker in one
+  process for now) · SQLite (`node:sqlite`).
+- Worker host: any always-on machine (VPS or home PC). Still your call.
 
-### Phase 1 — MVP "she works and reports back" (≈2 weeks)
-- Add repos + GitHub credentials (multiple accounts).
-- Create task → worker makes worktree → runs `claude -p` → pushes branch → opens PR.
-- Live log + status in the app; notification when done/failed.
+### Phase 1 — MVP "she works and reports back" ✅ (built)
+- Multiple GitHub accounts (encrypted tokens), projects, repos.
+- Create task → worktree + branch → `claude -p` stream → commit leftovers → push → open PR.
+- Live timeline in the app, standup summary, push notifications (Expo push or ntfy).
+- "Needs you" via a `QUESTION:` line; your reply resumes the **same** Claude session.
+- Parallel agents with a queue (`WG_MAX_PARALLEL`), stop, merge (squash + cleanup), archive.
+- End-to-end tests with a fake Claude CLI / fake GitHub; app verified in a browser.
 
-### Phase 2 — "She's a real assistant" (≈2–3 weeks)
-- Water Girl MCP (`report_progress`, `ask_human`) + resume flow.
-- Board (Project → Repo → Task), chat "what's the status of X?".
-- Parallel tasks + queue + usage-limit awareness.
-- Merge / request-changes / fix-conflicts buttons.
+### Phase 2 — "She's a real assistant" (next)
+- Water Girl MCP (`report_progress`, `ask_human`) so agents can ask mid-run, not only at the end.
+- Chat with Water Girl herself ("what's the status of Nucleus?", "start X in Y") — an LLM
+  turning your words into tasks and summaries.
+- Usage-limit awareness (the CLI already reports rate-limit events) to pace the queue.
+- Request-changes from PR review comments; fix-conflicts agent.
+- Sandbox each agent (separate OS user or container) so it can't read the server's data.
+- One-command deploy (Dockerfile / systemd unit) for a VPS.
 
 ### Phase 3 — "Friday mode" (ongoing)
 - Voice in/out, daily standup digest.
@@ -182,6 +186,6 @@ This is the part Claude Code alone doesn't give you. We get it three ways:
 
 ## 7. Open questions for you
 1. Worker on your home PC or a VPS?
-2. First interface: Telegram bot (fastest) or straight to the PWA?
+2. ~~First interface~~ — decided: native mobile app.
 3. Which Claude plan are you on (affects how many agents in parallel)?
 4. Is "Vertical" the umbrella name and "Water Girl" the assistant, or one and the same?

@@ -42,7 +42,7 @@ export class ClaudeCodeAdapter implements AgentAdapter {
     const child = spawn(this.bin, this.buildArgs(opts), {
       cwd: opts.cwd,
       stdio: ['ignore', 'pipe', 'pipe'],
-      env: { ...process.env },
+      env: agentEnv(),
     });
 
     let finalText: string | null = null;
@@ -110,6 +110,11 @@ export class ClaudeCodeAdapter implements AgentAdapter {
       },
     };
   }
+}
+
+/** The agent gets the server's environment minus Water Girl's own secrets (WG_*). */
+function agentEnv(): NodeJS.ProcessEnv {
+  return Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('WG_')));
 }
 
 interface ContentBlock {

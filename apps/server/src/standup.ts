@@ -19,7 +19,8 @@ export function standup(store: Store, tasks: TaskRecord[]): string[] {
   }
   for (const t of by('working')) {
     const last = store.lastActivity(t.id);
-    lines.push(`${t.projectName} · ${t.title} is in progress${last ? ` — ${clip(firstLine(last), 90)}` : ''}.`);
+    const doing = last ? ` — ${clip(firstLine(last), 90).replace(/[.…:]+$/, '')}` : '';
+    lines.push(`${t.projectName} · ${t.title} is in progress${doing}.`);
   }
   for (const t of by('review')) {
     lines.push(`${t.projectName} · ${t.title} has PR #${t.prNumber} waiting for your review.`);

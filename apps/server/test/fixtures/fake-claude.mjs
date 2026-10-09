@@ -12,7 +12,11 @@ const arg = (name) => {
 };
 const prompt = arg('-p') ?? '';
 const sessionId = arg('--resume') ?? arg('--session-id');
-if (process.env.FAKE_CLAUDE_LOG) appendFileSync(process.env.FAKE_CLAUDE_LOG, JSON.stringify(args) + '\n');
+if (process.env.FAKE_CLAUDE_LOG) {
+  appendFileSync(process.env.FAKE_CLAUDE_LOG, JSON.stringify(args) + '\n');
+  const leaked = Object.keys(process.env).filter((k) => k.startsWith('WG_'));
+  appendFileSync(process.env.FAKE_CLAUDE_LOG + '.env', JSON.stringify(leaked) + '\n');
+}
 
 const emit = (m) => process.stdout.write(JSON.stringify(m) + '\n');
 const git = (...a) => execFileSync('git', a, { cwd: process.cwd() });
@@ -31,7 +35,7 @@ if (prompt.includes('FAIL')) {
 
 if (prompt.includes('SLOW')) {
   say('Taking my time…');
-  await new Promise((r) => setTimeout(r, 10_000));
+  await new Promise((r) => setTimeout(r, Number(process.env.FAKE_CLAUDE_SLOW_MS ?? 10_000)));
 }
 
 if (prompt.includes('ASK')) {

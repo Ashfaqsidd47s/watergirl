@@ -57,6 +57,7 @@ describe('Water Girl end to end (fake Claude + fake GitHub + local git remote)',
     bare = makeRemote(root);
     gh = await startFakeGithub();
     process.env.FAKE_CLAUDE_LOG = join(root, 'claude.log');
+    process.env.WG_PROBE_SECRET = 'must-not-reach-agents';
     const config = loadConfig({
       WG_DATA_DIR: join(root, 'data'),
       WG_TOKEN: 'test-token',
@@ -68,6 +69,7 @@ describe('Water Girl end to end (fake Claude + fake GitHub + local git remote)',
   });
 
   after(async () => {
+    delete process.env.WG_PROBE_SECRET;
     await app.server.close();
     await gh.close();
     rmSync(root, { recursive: true, force: true });
@@ -124,6 +126,9 @@ describe('Water Girl end to end (fake Claude + fake GitHub + local git remote)',
     assert.equal(firstRun[firstRun.indexOf('--session-id') + 1], task.sessionId);
 
     assert.equal(notices.at(-1)?.title, 'PR ready · Nucleus · Add a hello file for order management');
+
+    // Water Girl's own secrets are not passed down to agents.
+    assert.equal(readFileSync(join(root, 'claude.log.env'), 'utf8').trim(), '[]');
 
     // Incremental polling only returns newer events.
     const lastId = detail.events.at(-1)!.id;
